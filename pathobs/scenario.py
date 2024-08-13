@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from shapely.plotting import plot_polygon, plot_points
 from shapely.geometry import CAP_STYLE
 import numpy as np
+from PIL import Image
+import io
 
 
 class Node:
@@ -82,3 +84,32 @@ class Scenario:
             plt.grid(True)
         plt.gca().set_aspect('equal', adjustable='box')
         #plt.show()
+    
+def save_scenario_image(self, grid=False, dpi=13, figsize=(6, 6)):
+
+    fig, ax = plt.subplots(figsize=figsize)
+        
+    ax.set_xlim(0, self.grid_size[0])
+    ax.set_ylim(0, self.grid_size[1])
+
+    if self.start:
+        plot_points(self.start.get_point(), ax=ax, color='green', markersize=10, label='Start')
+
+    if self.end:
+        plot_points(self.end.get_point(), ax=ax, color='red', markersize=10, label='End')
+
+    for obstacle in self.obstacles:
+        plot_polygon(obstacle, ax=ax, add_points=False, color='grey')
+    
+    if grid:
+        plt.grid(True)
+
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.axis('off')
+    buffer = io.BytesIO()
+    #plt.gca().invert_yaxis()
+    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.0, dpi=dpi)
+    buffer.seek(0)
+    plt.close()
+    return np.array(Image.open(io.BytesIO(buffer.getvalue())))
+

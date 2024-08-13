@@ -77,7 +77,8 @@ class Path:
   def plot_path(self, ax=None):
     """Plota o caminho no gráfico."""
     if ax is None:
-        fig, ax = plt.subplots()
+      fig, ax = plt.subplots()
+        
     x, y = zip(*[(p.x, p.y) for p in self.points])
     ax.plot(x, y, color='blue', linewidth=2, label='Path')
   
